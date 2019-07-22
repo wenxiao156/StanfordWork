@@ -6,29 +6,47 @@ package assignment4_1;
  * class that you will reimplement for Part III of the assignment.
  */
 
-import acm.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class HangmanLexicon {
+	/** 需要猜测单词的list*/
+	ArrayList<String> wordList = new ArrayList();
+	
+	/** 读取HangmanLexicon.txt的单词，当该行不为空时存进wordList中*/
+	public HangmanLexicon() {
+		File file = new File("HangmanLexicon.txt");
+		InputStreamReader input = null;
+		try {
+			input = new InputStreamReader(new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedReader reader = new BufferedReader(input);
+		String word = "";
+		try {
+			while((word = reader.readLine()) !=null) {
+				wordList.add(word);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 /** Returns the number of words in the lexicon. */
 	public int getWordCount() {
-		return 10;
+		return wordList.size();
 	}
 
 /** Returns the word at the specified index. */
 	public String getWord(int index) {
-		switch (index) {
-			case 0: return "BUOY";
-			case 1: return "COMPUTER";
-			case 2: return "CONNOISSEUR";
-			case 3: return "DEHYDRATE";
-			case 4: return "FUZZY";
-			case 5: return "HUBBUB";
-			case 6: return "KEYHOLE";
-			case 7: return "QUAGMIRE";
-			case 8: return "SLITHER";
-			case 9: return "ZIRCON";
-			default: throw new ErrorException("getWord: Illegal index");
-		}
+		return wordList.get(index);
 	};
 }
