@@ -21,7 +21,7 @@ public class Hangman extends ConsoleProgram {
 	
 	/** 提示单词*/
 	private String wordPrompt = "";
-
+	
 	/**需要猜测的单词 */
 	private String word;
 
@@ -60,7 +60,7 @@ public class Hangman extends ConsoleProgram {
 				println("You should guess one word!");
 				guessWord = readLine("You guess: ");
 			}
-			if (!updateWordPrompt(word, guessWord)) {
+			if (!updateWordPrompt(word, guessWord.charAt(0))) {
 				canvas.noteIncorrectGuess(guessWord.charAt(0), guessCount + 1);
 				guessCount++;	
 			}
@@ -85,27 +85,32 @@ public class Hangman extends ConsoleProgram {
 	 * 否则需要循环找出单词中字母所在位置，再一个个地进行拼接
 	 * 最后更新展示hangman面板中的提示单词
 	 */
-	private boolean updateWordPrompt(String word, String guessWord) {
-		if (word.indexOf(guessWord.toUpperCase()) < 0) {
+	private boolean updateWordPrompt(String word, char guessWord) {
+		guessWord = Character.toUpperCase(guessWord);
+		if (word.indexOf(guessWord) < 0) {
 			println("There no " + guessWord + "'s in the word.");
 			return false;
 		}
 		println("That guess is corrent!");
-		if (word.indexOf(guessWord.toUpperCase()) != word.lastIndexOf(guessWord.toUpperCase())) { //当字母在单词中出现第一次和最后一次的位置不相同时，单词中包含不止一个该字母
-			for (int i = 0; i < word.length(); i++) {
-				if (guessWord.toUpperCase().equals(word.charAt(i)+"")) {
-					wordPrompt = wordPrompt.substring(0, i) + guessWord.toUpperCase() + wordPrompt.substring(i + 1);
+		int firstIndex = word.indexOf(guessWord);
+		int lastIndex = word.lastIndexOf(guessWord);
+		char[] wordPromptCharArr = wordPrompt.toCharArray();
+		if (firstIndex != lastIndex) { //当字母在单词中出现第一次和最后一次的位置不相同时，单词中包含不止一个该字母 
+			for (int i = firstIndex; i <= lastIndex; i++) {
+				if (guessWord == word.charAt(i)) {
+					wordPromptCharArr[i] = guessWord;
 				}
 			}
 		} else {
-			wordPrompt = wordPrompt.substring(0, word.indexOf(guessWord.toUpperCase())) + guessWord.toUpperCase()
-					+ wordPrompt.substring(word.indexOf(guessWord.toUpperCase()) + 1);
+			wordPromptCharArr[firstIndex] = guessWord;
 		}
+		wordPrompt = String.valueOf(wordPromptCharArr);
 		canvas.displayWord(wordPrompt);
 		return true;
 
 	}
 	
+
 	/** 
 	 * 展示游戏结果
 	 * 提示单词与需要猜测的单词相同则成功，否则失败
