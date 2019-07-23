@@ -1,8 +1,8 @@
 package problem4;
 
-import acm.graphics.*;
+import java.awt.event.MouseEvent;
+import acm.graphics.GImage;
 import acm.program.*;
-import java.awt.event.*;
 
 public class FrogJump extends GraphicsProgram {
 
