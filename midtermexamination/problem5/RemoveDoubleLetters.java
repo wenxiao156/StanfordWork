@@ -17,13 +17,10 @@ public class RemoveDoubleLetters extends ConsoleProgram{
 	 * 当当前char与下一个char相同时，删除当前char，并让i减1，从当前位置重新判断，同时让length减1，当i达到length减1时，退出循环，防止越界
 	 */
 	private StringBuilder removeDouble(StringBuilder word) {
-		int length = word.length();
-		for(int i = 0; i < word.length(); i++) {
-			if(i == length-1) break;
+		for(int i = 0; i < word.length()-1; i++) {
 			if(word.charAt(i) == word.charAt(i+1)) {
 				word.delete(i,i+1);
 				i--;
-				length--;
 			}
 		}
 		return word;

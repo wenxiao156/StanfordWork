@@ -20,7 +20,7 @@ public class FindMax extends ConsoleProgram {
 
 	/**
 	 * 找出最大和第二大的数 
-	 * 使用ArrayList保存输入的数，初始化最大值和第二大的值为0
+	 * 初始化最大值和第二大的值为0
 	 * 如果当前数值大于max时，设置secondLargest为max，max为当前数值
 	 * 否则如果当前数值大于secondLargest时，设置secondLargest为当前数值
 	 */
