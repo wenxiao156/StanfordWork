@@ -5,8 +5,8 @@
  * This program will eventually play the Yahtzee game.
  */
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
 import acm.io.*;
 import acm.program.*;
@@ -64,6 +64,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 		}
 		updateUpperBonus();
 		displayResult();
+		putIntoFile();
 	}
 	
 	/**
@@ -322,6 +323,44 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 		display.printMessage("Congratulations, " + playerNames[winner] + ", you're the winner with a total score of "
 				+ maxScore + "!");
 	}
+	
+	private void putIntoFile() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("topTenScores.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<Integer> topScores = new ArrayList<Integer>();
+ 		try {
+			while(true) {
+				String line = reader.readLine();
+				if(line.isEmpty()) break;
+				topScores.add(Integer.valueOf(line));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 		try {
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 		for (int i = 0; i < nPlayers; i++) {
+ 			if(scores[i][TOTAL - 1] > topScores.get(topScores.size() - 1)) {
+ 				for(int j = 0; j < topScores.size(); j++) {
+ 					if(scores[i][TOTAL - 1] > topScores.get(j)) {
+ 						topScores.set(j, scores[i][TOTAL - 1]);
+ 						break;
+ 					}
+ 				}
+ 			}	
+		}
+ 		
+	}
 
 	/* Private instance variables */
 	private int nPlayers;
@@ -329,6 +368,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	private YahtzeeDisplay display;
 	/** 记录玩家分数的二维数组 */
 	private int[][] scores;
+	private static final int  TOP_SCORES_NUM = 10;
 	private RandomGenerator rgen = new RandomGenerator();
 
 }
