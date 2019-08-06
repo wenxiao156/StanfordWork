@@ -22,51 +22,52 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	 * 由用户输入玩家人数后输入玩家姓名，开始进行游戏
 	 */
 	public void run() {
-		IODialog dialog = getDialog();
-		nPlayers = dialog.readInt("Enter number of players");
-		playerNames = new String[nPlayers];
-		for (int i = 1; i <= nPlayers; i++) {
-			playerNames[i - 1] = dialog.readLine("Enter name for player " + i);
-		}
-		display = new YahtzeeDisplay(getGCanvas(), playerNames);
+		 IODialog dialog = getDialog();
+		 nPlayers = dialog.readInt("Enter number of players");
+		 playerNames = new String[nPlayers];
+		 for (int i = 1; i <= nPlayers; i++) {
+		 playerNames[i - 1] = dialog.readLine("Enter name for player " + i);
+		 }
+		 display = new YahtzeeDisplay(getGCanvas(), playerNames);
 		playGame();
 	}
-	
-	
+
 	/**
-	 * 进行游戏
-	 * 初始化分数的数组
-	 * 一共进行N_SCORING_CATEGORIES次游戏，每次游戏玩家按顺序进行
+	 * 进行游戏 初始化分数的数组 一共进行N_SCORING_CATEGORIES次游戏，每次游戏玩家按顺序进行
 	 * 等待玩家点击摇骰子按钮，随机获取骰子展示的数字，将数字记录进dices数组中，并由display在骰子上展示
-	 * 等待玩家选择想要重新摇的骰子，摇完之后等待玩家选择想要分配到的类别，判断类别是否已被选择
-	 * 根据摇到的骰子的数字计算得分，更新游戏面板上的分数
+	 * 等待玩家选择想要重新摇的骰子，摇完之后等待玩家选择想要分配到的类别，判断类别是否已被选择 根据摇到的骰子的数字计算得分，更新游戏面板上的分数
 	 * 最后计算玩家是否可以得到奖励，展示游戏结果
 	 */
 	private void playGame() {
-		initScoreArray();
-		for (int i = 0; i < N_SCORING_CATEGORIES; i++) {
-			for (int j = 0; j < nPlayers; j++) {
-				display.printMessage(playerNames[j] + "'s turn! Click 'Roll Dice' button to roll the dice.");
-				display.waitForPlayerToClickRoll(j + 1);
-				int[] dices = getDicesNum();
-				display.displayDice(dices);
-				display.printMessage("Select the dice you wish to re-roll and Click 'Roll Again'.");
-				checkDiceSelect(j + 1, dices);
-				display.printMessage("Select a category for this roll.");
-				int category = display.waitForPlayerToSelectCategory();
-				while (!checkCategory(j, category - 1)) {
-					category = display.waitForPlayerToSelectCategory();
-				}
-				int score = getScore(j, dices, category);
-				display.updateScorecard(category, j + 1, score);
-				updateScore(j);
-			}
+		 initScoreArray();
+		 for (int i = 0; i < N_SCORING_CATEGORIES; i++) {
+		 for (int j = 0; j < nPlayers; j++) {
+		 display.printMessage(playerNames[j] + "'s turn! Click 'Roll Dice' button to roll the dice.");
+		 display.waitForPlayerToClickRoll(j + 1);
+		 int[] dices = getDicesNum();
+		 display.displayDice(dices);
+		 display.printMessage("Select the dice you wish to re-roll and Click 'Roll Again'.");
+		 checkDiceSelect(j + 1, dices);
+		 display.printMessage("Select a category for this roll.");
+		 int category = display.waitForPlayerToSelectCategory();
+		 while (!checkCategory(j, category - 1)) {
+		 category = display.waitForPlayerToSelectCategory();
+		 }
+		 int score = getScore(j, dices, category);
+		 display.updateScorecard(category, j + 1, score);
+		 updateScore(j);
+		 }
+		 }
+		 updateUpperBonus();
+		 displayResult();
+		try {
+			putIntoFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		updateUpperBonus();
-		displayResult();
-		putIntoFile();
 	}
-	
+
 	/**
 	 * 初始化玩家分数数组，由二维数组进行记录，初始值为-1
 	 */
@@ -200,7 +201,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	 */
 	private int findFullHouse(int[] array) {
 		HashMap<Integer, Integer> map = getHashMap(array);
-		if (map.size() != 2)  //数组中的数字种数不等于2可以直接判断不符合，返回0
+		if (map.size() != 2) // 数组中的数字种数不等于2可以直接判断不符合，返回0
 			return 0;
 		boolean flag = false;
 		for (int num : map.keySet()) {
@@ -216,8 +217,8 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	}
 
 	/**
-	 * 基本数据类型的数组clone之后不会改变原数组，对复制后的数组进行排序，记录相差不等于1的次数count
-	 * count不能大于N_DICE - num
+	 * 基本数据类型的数组clone之后不会改变原数组，对复制后的数组进行排序，记录相差不等于1的次数count count不能大于N_DICE -
+	 * num
 	 */
 	private int findStraight(int[] array, int num) {
 		int[] temp = array.clone();
@@ -246,7 +247,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 			return 50;
 		return 0;
 	}
-	
+
 	/**
 	 * 将数组中的所有数字相加
 	 */
@@ -257,20 +258,19 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 		}
 		return score;
 	}
-	
+
 	/**
-	 * 更新上部总分，下部总分和全部总分
-	 * 更新scores数组中的记录分数和游戏面板中展示的分数
+	 * 更新上部总分，下部总分和全部总分 更新scores数组中的记录分数和游戏面板中展示的分数
 	 */
 	private void updateScore(int player) {
 		int upperScore = 0;
 		int lowerScore = 0;
 		int total = 0;
 		for (int i = 0; i < N_CATEGORIES; i++) {
-			if (i == UPPER_SCORE - 1 || i == UPPER_BONUS - 1 || i == LOWER_SCORE - 1 || i == TOTAL - 1) { //跳过记录总分和奖励的元素
+			if (i == UPPER_SCORE - 1 || i == UPPER_BONUS - 1 || i == LOWER_SCORE - 1 || i == TOTAL - 1) { // 跳过记录总分和奖励的元素
 				continue;
 			}
-			if (scores[player][i] != -1) {  //被分配后的类别才进行分数的相加
+			if (scores[player][i] != -1) { // 被分配后的类别才进行分数的相加
 				if (i < UPPER_SCORE - 1) {
 					upperScore += scores[player][i];
 				} else if (i < LOWER_SCORE - 1) {
@@ -290,7 +290,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 		}
 		display.updateScorecard(TOTAL, player + 1, total);
 	}
-	
+
 	/**
 	 * 更新奖励分和总分，上部总分大于63可以得到奖励分35
 	 */
@@ -324,42 +324,59 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 				+ maxScore + "!");
 	}
 	
-	private void putIntoFile() {
+	
+	/**
+	 * 读取最高分文件中的玩家及分数，保存进ArrayList<Player>中
+	 */
+	private ArrayList<Player> readFile() {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader("topTenScores.txt"));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ArrayList<Integer> topScores = new ArrayList<Integer>();
- 		try {
-			while(true) {
+		ArrayList<Player> list = new ArrayList<Player>();
+		try {
+			while (true) {
 				String line = reader.readLine();
-				if(line.isEmpty()) break;
-				topScores.add(Integer.valueOf(line));
+				if (line == null || line.isEmpty())
+					break;
+				String name = line.split("  ")[0];
+				int score = Integer.valueOf(line.split("  ")[1]);
+				Player player = new Player(name, score);
+				list.add(player);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
- 		for (int i = 0; i < nPlayers; i++) {
- 			if(scores[i][TOTAL - 1] > topScores.get(topScores.size() - 1)) {
- 				for(int j = 0; j < topScores.size(); j++) {
- 					if(scores[i][TOTAL - 1] > topScores.get(j)) {
- 						topScores.set(j, scores[i][TOTAL - 1]);
- 						break;
- 					}
- 				}
- 			}	
+		return list;
+	}
+	
+	/**
+	 * 把现在的玩家分数添加到ArrayList<Player>中，对ArrayList进行排序，取前10个分数
+	 */
+	private void putIntoFile() throws IOException {
+		ArrayList<Player> list = readFile();
+		try {
+			PrintWriter write = new PrintWriter(new FileWriter("topTenScores.txt"));
+			int size = list.size();
+			for (int i = 0; i < nPlayers; i++) {
+//				if(scores[i][TOTAL - 1] > list.get(size).getScore()) {
+//					display.printMessage("Congratulations, " + playerNames[i] + ", you update the record of the top ten highest scores  with a total score of "
+//							+ scores[i][TOTAL - 1] + "!");
+//				}
+				Player player = new Player(playerNames[i], scores[i][TOTAL - 1]);
+				list.add(player);
+			}
+			Collections.sort(list);
+			for (int i = 0; i < TOP_NUM; i++) {
+				write.println(list.get(i));
+			}
+			write.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
- 		
 	}
 
 	/* Private instance variables */
@@ -368,7 +385,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	private YahtzeeDisplay display;
 	/** 记录玩家分数的二维数组 */
 	private int[][] scores;
-	private static final int  TOP_SCORES_NUM = 10;
+	private static final int TOP_NUM = 10;
 	private RandomGenerator rgen = new RandomGenerator();
 
 }
