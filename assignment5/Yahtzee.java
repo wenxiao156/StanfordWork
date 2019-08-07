@@ -60,12 +60,8 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 		 }
 		 updateUpperBonus();
 		 displayResult();
-		try {
-			putIntoFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 putIntoFile();
+		
 	}
 
 	/**
@@ -356,7 +352,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	/**
 	 * 把现在的玩家分数添加到ArrayList<Player>中，对ArrayList进行排序，取前10个分数
 	 */
-	private void putIntoFile() throws IOException {
+	private void putIntoFile(){
 		ArrayList<Player> list = readFile();
 		try {
 			PrintWriter write = new PrintWriter(new FileWriter("topTenScores.txt"));
