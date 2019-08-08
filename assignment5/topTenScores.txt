@@ -1,5 +1,6 @@
 Tom  267
 Kate  256
+King  227
 Park  213
 KiKi  200
 Serril  198
@@ -7,4 +8,3 @@ YoYo  156
 Mary  144
 Sue  132
 Queen  123
-King  111

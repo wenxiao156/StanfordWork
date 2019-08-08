@@ -351,6 +351,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 	
 	/**
 	 * 把现在的玩家分数添加到ArrayList<Player>中，对ArrayList进行排序，取前10个分数
+	 * 恭喜玩家更改了最高分排名
 	 */
 	private void putIntoFile(){
 		ArrayList<Player> list = readFile();
@@ -358,10 +359,10 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 			PrintWriter write = new PrintWriter(new FileWriter("topTenScores.txt"));
 			int size = list.size();
 			for (int i = 0; i < nPlayers; i++) {
-//				if(scores[i][TOTAL - 1] > list.get(size).getScore()) {
-//					display.printMessage("Congratulations, " + playerNames[i] + ", you update the record of the top ten highest scores  with a total score of "
-//							+ scores[i][TOTAL - 1] + "!");
-//				}
+				if(scores[i][TOTAL - 1] > list.get(size - 1).getScore()) {
+					display.printMessage("Congratulations, " + playerNames[i] + ", you update the record of the top ten highest scores  with a total score of "
+							+ scores[i][TOTAL - 1] + "!");
+				}
 				Player player = new Player(playerNames[i], scores[i][TOTAL - 1]);
 				list.add(player);
 			}
